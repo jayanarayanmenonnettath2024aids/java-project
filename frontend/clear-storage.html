@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Storage & Test</title>
+    <style>
+        body { font-family: Arial; padding: 40px; background: #f5f5f5; text-align: center; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        button { padding: 15px 30px; margin: 10px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #5568d3; }
+        button.danger { background: #ef4444; }
+        button.danger:hover { background: #dc2626; }
+        .status { margin-top: 20px; padding: 15px; border-radius: 6px; }
+        .success { background: #d1fae5; color: #065f46; }
+        .info { background: #dbeafe; color: #1e40af; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Storage Manager</h1>
+        <p>Use this to clear cached data and start fresh</p>
+        
+        <div id="status" class="status info">
+            Current Storage:<br>
+            Token: <span id="token">Loading...</span><br>
+            User: <span id="user">Loading...</span>
+        </div>
+        
+        <button class="danger" onclick="clearStorage()">Clear All Storage</button>
+        <button onclick="checkStorage()">Refresh Status</button>
+        <button onclick="openApp()">Open App</button>
+    </div>
+
+    <script>
+        function checkStorage() {
+            const token = localStorage.getItem('jwt_token');
+            const user = localStorage.getItem('current_user');
+            
+            document.getElementById('token').textContent = token ? 'Present (' + token.substring(0, 30) + '...)' : 'None';
+            document.getElementById('user').textContent = user ? JSON.parse(user).email : 'None';
+        }
+
+        function clearStorage() {
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // Also clear all cookies
+            document.cookie.split(";").forEach(function(c) { 
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+            });
+            
+            document.getElementById('status').innerHTML = '<span class="success">✓ All storage cleared! You can now login fresh.</span>';
+            checkStorage();
+        }
+
+        function openApp() {
+            window.open('index.html', '_blank');
+        }
+
+        // Initial check
+        checkStorage();
+    </script>
+</body>
+</html>

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt Collector - Smart Receipt Management</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Page Navigation Functions -->
+    <script>
+        console.log('Defining global navigation functions');
+        
+        window.showRegisterPage = function() {
+            console.log('showRegisterPage called');
+            document.getElementById('landingPage').classList.add('hidden');
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.remove('hidden');
+            document.getElementById('app').classList.add('hidden');
+        };
+
+        window.showLoginPage = function() {
+            console.log('showLoginPage called');
+            document.getElementById('landingPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.add('hidden');
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('app').classList.add('hidden');
+        };
+        
+        window.toggleTheme = function() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update all theme toggle icons
+            const iconClass = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            document.querySelectorAll('.theme-toggle i').forEach(icon => {
+                icon.className = iconClass;
+            });
+        };
+        
+        console.log('Global functions defined');
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    
+    <!-- ==================== LANDING PAGE ==================== -->
+    <div id="landingPage" class="landing-page">
+        <button class="theme-toggle" id="landingThemeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
+        
+        <div class="landing-container">
+            <div class="landing-hero">
+                <div class="landing-logo">
+                    <i class="fas fa-receipt"></i>
+                </div>
+                
+                <h1 class="landing-title">Receipt Collector</h1>
+                <p class="landing-subtitle">
+                    Simplify your life. Organize, track, and manage all your receipts in one smart platform.
+                </p>
+                
+                <div class="landing-features">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Easy Upload</h3>
+                        <p class="feature-desc">Drag and drop your receipts. Upload images or PDFs instantly.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <h3 class="feature-title">Smart Analytics</h3>
+                        <p class="feature-desc">Track spending patterns with beautiful charts and insights.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="feature-title">Secure & Safe</h3>
+                        <p class="feature-desc">Bank-level security with JWT authentication and encryption.</p>
+                    </div>
+                </div>
+                
+                <div class="landing-cta">
+                    <button class="btn btn-primary btn-lg" id="getStartedBtn" onclick="window.showRegisterPage();">
+                        <i class="fas fa-rocket"></i>
+                        Get Started Free
+                    </button>
+                    <button class="btn btn-secondary btn-lg" id="signInBtn" onclick="window.showLoginPage();">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Sign In
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== LOGIN PAGE ==================== -->
+    <div id="loginPage" class="auth-page hidden">
+        <button class="theme-toggle" id="loginThemeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
+        
+        <div class="auth-container">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-receipt"></i>
+                </div>
+                <h1 class="auth-title">Welcome Back</h1>
+                <p class="auth-subtitle">Sign in to continue to your dashboard</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="loginEmail" placeholder="Enter your email" required autocomplete="email">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password">
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+            </form>
+            
+            <div class="auth-footer">
+                Don't have an account? <a href="#" id="showRegister" onclick="window.showRegisterPage(); return false;">Create one now</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== REGISTER PAGE ==================== -->
+    <div id="registerPage" class="auth-page hidden">
+        <button class="theme-toggle" id="registerThemeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
+        
+        <div class="auth-container">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h1 class="auth-title">Create Account</h1>
+                <p class="auth-subtitle">Join us and start managing your receipts</p>
+            </div>
+            
+            <form id="registerForm">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="registerName" placeholder="Enter your full name" required autocomplete="name">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="registerEmail" placeholder="your@email.com" required autocomplete="email">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" id="registerPassword" placeholder="Create a strong password" required autocomplete="new-password">
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+                    <i class="fas fa-user-plus"></i>
+                    Create Account
+                </button>
+            </form>
+            
+            <div class="auth-footer">
+                Already have an account? <a href="#" id="showLogin" onclick="window.showLoginPage(); return false;">Sign in here</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== DASHBOARD ==================== -->
+    <div id="app" class="dashboard hidden">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a href="#" class="navbar-brand">
+                    <i class="fas fa-receipt"></i>
+                    <span>Receipt Collector</span>
+                </a>
+                
+                <ul class="navbar-nav">
+                    <li><a href="#" class="nav-link active" data-page="dashboard">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </a></li>
+                    <li><a href="#" class="nav-link" data-page="receipts">
+                        <i class="fas fa-file-invoice"></i> Receipts
+                    </a></li>
+                    <li id="analyticsNav" style="display: none;"><a href="#" class="nav-link" data-page="analytics">
+                        <i class="fas fa-chart-pie"></i> Analytics
+                    </a></li>
+                </ul>
+                
+                <div class="navbar-actions">
+                    <button class="theme-toggle" id="dashboardThemeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    
+                    <div class="user-menu" id="userMenu">
+                        <div class="user-avatar" id="userAvatar">U</div>
+                        <div class="dropdown">
+                            <div class="dropdown-header">
+                                <div class="dropdown-username" id="dropdownUsername">User</div>
+                                <div class="dropdown-email" id="dropdownEmail">user@email.com</div>
+                            </div>
+                            <a href="#" class="dropdown-item" data-page="profile">
+                                <i class="fas fa-user"></i> My Profile
+                            </a>
+                            <a href="#" class="dropdown-item" id="logoutBtn">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">Dashboard</h1>
+                    <p class="page-subtitle">Welcome back! Here's an overview of your receipts.</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-label">Total Receipts</span>
+                            <div class="stat-icon">
+                                <i class="fas fa-receipt"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalReceipts">0</div>
+                        <div class="stat-trend" id="receiptsTrend"></div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-label">Total Spent</span>
+                            <div class="stat-icon">
+                                <i class="fas fa-rupee-sign"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="totalSpent">₹0.00</div>
+                        <div class="stat-trend" id="totalSpentTrend"></div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-label">This Month</span>
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="monthlySpent">₹0.00</div>
+                        <div class="stat-trend" id="monthlyTrend"></div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-label">Avg. Receipt</span>
+                            <div class="stat-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="avgReceipt">₹0.00</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-label">This Week</span>
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-week"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="weeklySpent">₹0.00</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-label">Highest Receipt</span>
+                            <div class="stat-icon">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="highestReceipt">₹0.00</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-label">Top Category</span>
+                            <div class="stat-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="topCategory" style="font-size: 1.5rem;">-</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-label">Saved This Month</span>
+                            <div class="stat-icon">
+                                <i class="fas fa-piggy-bank"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="savedAmount">₹0.00</div>
+                    </div>
+                </div>
+                
+                <!-- Recent Receipts -->
+                <div style="background: var(--bg-primary); border: 2px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--space-2xl); margin-top: var(--space-xl);">
+                    <h2 style="margin-bottom: var(--space-lg); font-size: 1.5rem;">Recent Receipts</h2>
+                    <div id="recentReceipts"></div>
+                </div>
+                
+                <!-- Category Chart -->
+                <div style="background: var(--bg-primary); border: 2px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--space-2xl); margin-top: var(--space-xl);">
+                    <h2 style="margin-bottom: var(--space-lg); font-size: 1.5rem;">Spending by Category</h2>
+                    <canvas id="categoryChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+            
+            <!-- Receipts Page -->
+            <div id="receiptsPage" class="page" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">My Receipts</h1>
+                    <p class="page-subtitle">View and manage all your receipts</p>
+                </div>
+                
+                <div style="margin-bottom: var(--space-xl);">
+                    <button class="btn btn-primary" id="addReceiptBtn">
+                        <i class="fas fa-plus"></i> Add New Receipt
+                    </button>
+                </div>
+                
+                <!-- Filters -->
+                <div class="filters-container">
+                    <div class="filters-header">
+                        <h3 style="margin: 0; display: flex; align-items: center; gap: var(--space-sm);">
+                            <i class="fas fa-filter"></i> Filters
+                        </h3>
+                        <span id="activeFiltersCount" class="filter-count-badge" style="display: none;">0 active</span>
+                    </div>
+                    <div class="filters-grid">
+                        <div class="filter-item">
+                            <label class="filter-label">
+                                <i class="fas fa-search"></i> Search
+                            </label>
+                            <input type="text" id="searchReceipts" class="form-control" placeholder="Store name, category...">
+                        </div>
+                        <div class="filter-item">
+                            <label class="filter-label">
+                                <i class="fas fa-tag"></i> Category
+                            </label>
+                            <select id="filterCategory" class="form-control">
+                                <option value="">All Categories</option>
+                                <option value="FOOD">🍔 Food</option>
+                                <option value="TRANSPORTATION">🚗 Transportation</option>
+                                <option value="SHOPPING">🛍️ Shopping</option>
+                                <option value="ENTERTAINMENT">🎬 Entertainment</option>
+                                <option value="HEALTHCARE">⚕️ Healthcare</option>
+                                <option value="UTILITIES">💡 Utilities</option>
+                                <option value="EDUCATION">📚 Education</option>
+                                <option value="OTHER">📦 Other</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label class="filter-label">
+                                <i class="fas fa-credit-card"></i> Payment Method
+                            </label>
+                            <select id="filterPayment" class="form-control">
+                                <option value="">All Payment Methods</option>
+                                <option value="CASH">💵 Cash</option>
+                                <option value="CREDIT_CARD">💳 Credit Card</option>
+                                <option value="DEBIT_CARD">💳 Debit Card</option>
+                                <option value="UPI">📱 UPI</option>
+                                <option value="OTHER">💰 Other</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label class="filter-label">
+                                <i class="fas fa-calendar-alt"></i> Date From
+                            </label>
+                            <input type="date" id="filterDateFrom" class="form-control">
+                        </div>
+                        <div class="filter-item">
+                            <label class="filter-label">
+                                <i class="fas fa-calendar-check"></i> Date To
+                            </label>
+                            <input type="date" id="filterDateTo" class="form-control">
+                        </div>
+                        <div class="filter-item" style="display: flex; align-items: flex-end;">
+                            <button class="btn btn-secondary" id="clearFilters" style="width: 100%;">
+                                <i class="fas fa-times-circle"></i> Clear All
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="receiptsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-lg);">
+                    <!-- Receipts will be loaded here dynamically -->
+                </div>
+            </div>
+            
+            <!-- Analytics Page (Admin Only) -->
+            <div id="analyticsPage" class="page" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Analytics</h1>
+                    <p class="page-subtitle">System-wide analytics and insights</p>
+                </div>
+                
+                <div id="analyticsContainer">
+                    <!-- Analytics will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Profile Page -->
+            <div id="profilePage" class="page" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">My Profile</h1>
+                    <p class="page-subtitle">Manage your account settings</p>
+                </div>
+                
+                <div style="background: var(--bg-primary); border: 2px solid var(--border-color); border-radius: var(--border-radius-lg); padding: var(--space-2xl); max-width: 600px;">
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" id="profileUsername" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="profileEmail" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <!-- Receipt Modal -->
+    <div id="receiptModal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Receipt</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <form id="receiptForm">
+                <div class="form-group">
+                    <label class="form-label">Store Name *</label>
+                    <input type="text" id="storeName" class="form-control" required placeholder="e.g., Amazon, Walmart">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Purchase Date *</label>
+                    <input type="date" id="purchaseDate" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Total Amount *</label>
+                    <input type="number" id="totalAmount" class="form-control" required step="0.01" min="0" placeholder="0.00">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Category *</label>
+                    <select id="category" class="form-control" required>
+                        <option value="FOOD">Food</option>
+                        <option value="TRANSPORTATION">Transportation</option>
+                        <option value="SHOPPING">Shopping</option>
+                        <option value="ENTERTAINMENT">Entertainment</option>
+                        <option value="HEALTHCARE">Healthcare</option>
+                        <option value="UTILITIES">Utilities</option>
+                        <option value="EDUCATION">Education</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Payment Method *</label>
+                    <select id="paymentMethod" class="form-control" required>
+                        <option value="CASH">Cash</option>
+                        <option value="CREDIT_CARD">Credit Card</option>
+                        <option value="DEBIT_CARD">Debit Card</option>
+                        <option value="UPI">UPI</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Receipt File (Optional)</label>
+                    <div id="fileUploadArea" style="border: 2px dashed var(--border); border-radius: var(--radius); padding: 2rem; text-align: center; cursor: pointer; transition: all 0.3s;">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--text-light); margin-bottom: 0.5rem;"></i>
+                        <p style="color: var(--text-light); margin: 0;">Click or drag file here to upload</p>
+                        <p style="color: var(--text-light); font-size: 0.875rem; margin: 0.25rem 0 0 0;">PDF or Image (Max 10MB)</p>
+                    </div>
+                    <input type="file" id="receiptFile" accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                    <div id="filePreview" style="margin-top: 1rem; display: none;"></div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelModal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submitReceipt">
+                        <i class="fas fa-plus"></i> Add Receipt
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/receipts.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
