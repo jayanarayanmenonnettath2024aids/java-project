@@ -1,24 +1,38 @@
 # Digital Receipt Collector 📱💳
 
-A comprehensive **Digital Receipt Collector** web application built with **Spring Boot 3.x**, **Spring Security (JWT)**, **MySQL**, and **Swagger UI**. This application allows users to securely upload, manage, categorize, and analyze digital receipts from online and offline purchases.
+A comprehensive **Digital Receipt Collector** web application built with **Spring Boot 3.x**, **Spring Security (JWT)**, **MySQL**, and **Modern Vanilla JavaScript**. This application allows users to securely upload, manage, categorize, and analyze digital receipts from online and offline purchases with a beautiful, responsive UI.
 
 ---
 
 ## 🚀 Features
+
+### Modern UI/UX
+- 🎨 **Beautiful Dashboard** with glassmorphism design and smooth animations
+- 📊 **8 KPI Cards** showing Total Receipts, Total Spent, Monthly spending, Average, Weekly spending, Highest receipt, Top category, and Savings
+- 📈 **Trend Indicators** with up/down arrows and percentage changes
+- 💰 **INR Currency Format** (₹) throughout the application
+- 🌓 **Dark/Light Theme Toggle** for comfortable viewing
+- 📱 **Fully Responsive** design for mobile, tablet, and desktop
+- 🖼️ **Image Preview** with full-screen modal for receipt images
+- 🎯 **Enhanced Filters** with active count badges and emoji icons
+- 🔍 **Real-time Search** by store name, category, payment method, and date range
+- 📊 **Category Chart** with beautiful donut visualization
 
 ### User Management
 - ✅ User registration and login with JWT-based authentication
 - ✅ Role-based access control (USER and ADMIN roles)
 - ✅ Secure password encryption using BCrypt
 - ✅ User profile management
+- 🔐 Persistent login with localStorage
 
 ### Receipt Management
 - 📤 Upload digital receipts (PDF, images)
 - 🏪 Store receipt metadata (store name, date, amount, category, payment method)
-- 🔍 Search and filter receipts by store name, category, and date range
-- ✏️ Update and delete receipts
+- 🔍 Advanced search and filter receipts by store name, category, and date range
+- ✏️ Update and delete receipts with confirmation dialogs
 - 📄 Paginated receipt listing with sorting options
 - 💾 File storage with automatic file management
+- 🖼️ Receipt image display with full-screen preview
 
 ### Admin Features
 - 👥 View and manage all users
@@ -31,13 +45,15 @@ A comprehensive **Digital Receipt Collector** web application built with **Sprin
   - Monthly receipt count and spending trends
 
 ### API Documentation
-- 📚 Auto-generated API documentation with **Swagger UI**
-- 🔐 Built-in authentication testing with Bearer token support
+- 📚 RESTful API with comprehensive endpoints
+- 🔐 JWT Bearer token authentication
+- 📖 Swagger UI available at `/swagger-ui.html` (optional)
 
 ---
 
 ## 🛠️ Technology Stack
 
+### Backend
 | Technology | Version | Purpose |
 |-----------|---------|---------|
 | **Java** | 17+ | Programming Language |
@@ -50,10 +66,21 @@ A comprehensive **Digital Receipt Collector** web application built with **Sprin
 | **Swagger/OpenAPI** | 2.3.0 | API Documentation |
 | **Maven** | 3.6+ | Build Tool |
 
+### Frontend
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| **Vanilla JavaScript** | ES6+ | Pure JavaScript (No frameworks) |
+| **HTML5** | - | Semantic Markup |
+| **CSS3** | - | Modern Styling with Glassmorphism |
+| **Chart.js** | 4.4.0 | Category Spending Visualization |
+| **Font Awesome** | - | Icons |
+| **Google Fonts** | - | Poppins Font Family |
+
 ---
 
 ## 📦 Project Structure
 
+### Backend (Spring Boot)
 ```
 com.digitalreceiptcollector
 ├── controller          # REST API Controllers
@@ -99,6 +126,23 @@ com.digitalreceiptcollector
     └── ErrorResponse.java
 ```
 
+### Frontend (Vanilla JavaScript)
+```
+frontend/
+├── index.html              # Main SPA HTML
+├── css/
+│   └── style.css          # 1134+ lines of modern CSS with glassmorphism
+├── js/
+│   ├── config.js          # API configuration
+│   ├── api.js             # API client with JWT handling
+│   ├── auth.js            # Authentication logic
+│   ├── ui.js              # UI utilities and helpers
+│   ├── receipts.js        # Receipt management (570+ lines)
+│   ├── admin.js           # Admin panel functionality
+│   └── app.js             # Application initialization
+└── README.md              # Frontend documentation
+```
+
 ---
 
 ## 🔧 Prerequisites
@@ -114,14 +158,30 @@ Before running the application, ensure you have:
 
 ## ⚙️ Installation & Setup
 
-### 1. Clone the Repository
+### Quick Start (Recommended)
 
-```bash
-git clone https://github.com/yourusername/digital-receipt-collector.git
-cd digital-receipt-collector
+Use the automated PowerShell script to build and run both backend and frontend:
+
+```powershell
+.\build-and-run.ps1
 ```
 
-### 2. Configure MySQL Database
+This will:
+1. ✅ Set JAVA_HOME and MAVEN_HOME
+2. ✅ Build the Spring Boot application
+3. ✅ Start the backend server on port 8080
+4. ✅ Open the frontend UI in your default browser
+
+### Manual Setup
+
+#### 1. Clone the Repository
+
+```bash
+git clone https://github.com/jayanarayanmenonnettath2024aids/java-project.git
+cd java-project
+```
+
+#### 2. Configure MySQL Database
 
 Create a MySQL database:
 
@@ -129,37 +189,50 @@ Create a MySQL database:
 CREATE DATABASE digital_receipt_db;
 ```
 
-### 3. Update Database Credentials
+Run the schema and sample data:
+
+```bash
+mysql -u root -p digital_receipt_db < database-schema.sql
+mysql -u root -p digital_receipt_db < add-sample-receipts.sql
+```
+
+#### 3. Update Database Credentials (if needed)
 
 Edit `src/main/resources/application.properties`:
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/digital_receipt_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
-spring.datasource.username=YOUR_MYSQL_USERNAME
-spring.datasource.password=YOUR_MYSQL_PASSWORD
+spring.datasource.url=jdbc:mysql://localhost:3306/digital_receipt_db
+spring.datasource.username=root
+spring.datasource.password=root
 ```
 
-### 4. Configure JWT Secret (Optional)
-
-For production, update the JWT secret in `application.properties`:
-
-```properties
-app.jwt.secret=YOUR_CUSTOM_BASE64_ENCODED_SECRET_KEY
-```
-
-### 5. Build the Project
+#### 4. Build and Run Backend
 
 ```bash
 mvn clean install
-```
-
-### 6. Run the Application
-
-```bash
 mvn spring-boot:run
 ```
 
-The application will start on **http://localhost:8080**
+The backend API will start on **http://localhost:8080**
+
+#### 5. Open Frontend
+
+Open `frontend/index.html` in your browser or use:
+
+```bash
+start frontend/index.html
+```
+
+The UI will be available and will connect to the backend API.
+
+### Default Login Credentials
+
+```
+Email: jaya@gmail.com
+Password: (use the password you set during registration)
+```
+
+Or create a new account using the registration page.
 
 ---
 
@@ -277,6 +350,36 @@ curl -X GET http://localhost:8080/api/admin/analytics \
 
 ---
 
+## 🎨 UI Features
+
+### Modern Design
+- **Glassmorphism Effect**: Frosted glass cards with blur effects
+- **Smooth Animations**: Fade-in, slide-in, and hover transitions
+- **Color Scheme**: Purple gradient theme with proper contrast
+- **Responsive Layout**: Mobile-first design that works on all devices
+
+### Dashboard
+- **8 KPI Cards**: Comprehensive financial overview at a glance
+- **Trend Indicators**: Visual up/down arrows with percentage changes
+- **Category Chart**: Interactive donut chart for spending by category
+- **Recent Receipts**: Card-based layout with image thumbnails
+
+### Interactive Elements
+- **Theme Toggle**: Switch between dark and light modes
+- **Filter Panel**: Advanced filters with active count badges
+- **Image Preview**: Full-screen modal with zoom capability
+- **Form Modals**: Smooth modal dialogs for add/edit operations
+- **Confirmation Dialogs**: User-friendly delete confirmations
+
+### User Experience
+- **Real-time Updates**: Instant dashboard refresh after operations
+- **Loading States**: Skeleton loaders and spinners
+- **Error Handling**: User-friendly error messages
+- **Form Validation**: Client-side validation with helpful hints
+- **Persistent Sessions**: Auto-login with localStorage
+
+---
+
 ## 🔐 Creating an Admin User
 
 By default, users are registered with the `USER` role. To create an admin user, you need to manually update the database:
@@ -289,7 +392,16 @@ Alternatively, you can modify the registration logic to accept a role parameter.
 
 ---
 
-## 📚 Swagger UI Documentation
+## 📚 API Documentation & Testing
+
+### Using the Web UI (Recommended)
+
+1. Start the backend server
+2. Open `frontend/index.html` in your browser
+3. Register/Login with your credentials
+4. Use the intuitive UI to manage receipts
+
+### Using Swagger UI (For Developers)
 
 Access the interactive API documentation at:
 
@@ -300,6 +412,10 @@ Features:
 - 🧪 Test endpoints directly from the browser
 - 🔐 Authenticate with JWT token (click "Authorize" button)
 - 📖 View request/response schemas
+
+### Using cURL (For Testing)
+
+See the [API Usage Examples](#📝-api-usage-examples) section below for cURL commands.
 
 ---
 
@@ -355,18 +471,31 @@ spring.servlet.multipart.max-request-size=10MB
 
 ## 🧪 Testing
 
-### Run Tests
+### Test the Web UI
+
+1. Start the application using `.\build-and-run.ps1`
+2. The frontend will open automatically in your browser
+3. Register a new account or login with existing credentials
+4. Test features:
+   - ✅ Add receipts with file upload
+   - ✅ View dashboard with 8 KPIs
+   - ✅ Filter receipts by category, payment method, date
+   - ✅ Edit and delete receipts
+   - ✅ Toggle dark/light theme
+   - ✅ View receipt images in full screen
+
+### Test with Swagger UI
+
+1. Start the backend: `mvn spring-boot:run`
+2. Navigate to http://localhost:8080/swagger-ui.html
+3. Click "Authorize" and enter your JWT token
+4. Test endpoints directly from the UI
+
+### Run Unit Tests
 
 ```bash
 mvn test
 ```
-
-### Manual Testing with Swagger UI
-
-1. Start the application
-2. Navigate to http://localhost:8080/swagger-ui.html
-3. Click "Authorize" and enter your JWT token
-4. Test endpoints directly from the UI
 
 ---
 
@@ -487,11 +616,46 @@ This project is licensed under the Apache License 2.0 - see the LICENSE file for
 
 ---
 
-## 👨‍💻 Author
+## � UI Screenshots
 
-**Jayanarayan**
-- Email: jay@example.com
-- GitHub: [@yourusername](https://github.com/yourusername)
+### Login Page
+- Clean, modern login interface with glassmorphism design
+- Registration form with validation
+- Responsive layout for all devices
+
+### Dashboard
+- 8 KPI cards showing financial metrics with trend indicators
+- Category spending chart (donut visualization)
+- Recent receipts grid with image thumbnails
+- Quick actions (Add Receipt, Filters, Theme Toggle)
+
+### Receipt Management
+- Advanced filter panel with search and category filters
+- Receipt cards with store name, amount, date, and image preview
+- Edit and delete actions with confirmation dialogs
+- Full-screen image viewer modal
+
+### Add/Edit Receipt
+- Form modal with all receipt details
+- File upload with drag-and-drop support
+- Category and payment method dropdowns
+- Date picker for purchase date
+- Real-time validation
+
+### Theme Support
+- Dark mode with purple gradient theme
+- Light mode with clean white interface
+- Smooth theme transitions
+- User preference persistence
+
+---
+
+## �👨‍💻 Author
+
+**Jayanarayan Menon Nettath**
+- Email: jayanarayanmenonnettath2024aids@example.com
+- GitHub: [@jayanarayanmenonnettath2024aids](https://github.com/jayanarayanmenonnettath2024aids)
+- Repository: [java-project](https://github.com/jayanarayanmenonnettath2024aids/java-project)
 
 ---
 
@@ -500,7 +664,9 @@ This project is licensed under the Apache License 2.0 - see the LICENSE file for
 - Spring Boot team for the amazing framework
 - JWT.io for JWT implementation guidance
 - MySQL for the robust database system
-- Swagger/OpenAPI for excellent API documentation
+- Chart.js for beautiful data visualization
+- Font Awesome for comprehensive icon library
+- The open-source community for inspiration
 
 ---
 
